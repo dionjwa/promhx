@@ -144,7 +144,10 @@ class AsyncBase<T>{
                     up.linkf(val);
 #else
                     try up.linkf(val)
-                catch (e:Dynamic) up.async.handleError(e);
+                catch (e:Dynamic)  {
+                    var stack = e + haxe.CallStack.toString(haxe.CallStack.exceptionStack()).split('\n').join('\n\t');
+                    up.async.handleError(stack);
+                }
 #end
                 }
                 _fulfilled = true; // we're in a fulfilled state
@@ -207,7 +210,10 @@ class AsyncBase<T>{
                     _resolve(_errorMap(error));
 #else
                     try this._resolve(_errorMap(error))
-                        catch (e : Dynamic) update_errors(e);
+                        catch (e : Dynamic) {
+                            var stack = e + haxe.CallStack.toString(haxe.CallStack.exceptionStack()).split('\n').join('\n\t');
+                            update_errors(stack);
+                        };
 #end
                 } else {
                     update_errors(error);
@@ -284,7 +290,10 @@ class AsyncBase<T>{
             next.handleResolve(f(current._val));
 #else
             try next.handleResolve(f(current._val))
-            catch (e:Dynamic) next.handleError(e);
+            catch (e:Dynamic) {
+                var stack = e + haxe.CallStack.toString(haxe.CallStack.exceptionStack()).split('\n').join('\n\t');
+                next.handleError(stack);
+            }
 #end
         }
 
@@ -346,7 +355,10 @@ class AsyncBase<T>{
             linkf(current._val);
 #else
             try linkf(current._val)
-            catch (e:Dynamic) ret.handleError(e);
+            catch (e:Dynamic) {
+                var stack = e + haxe.CallStack.toString(haxe.CallStack.exceptionStack()).split('\n').join('\n\t');
+                ret.handleError(stack);
+            }
 #end
         }
     }

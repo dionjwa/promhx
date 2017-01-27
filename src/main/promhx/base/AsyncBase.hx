@@ -176,7 +176,7 @@ class AsyncBase<T>{
                 var set = new Map<String, Bool>();
                 var i = 0;
                 while (i < stacks.length) {
-                    var key = stacks[i].className + stacks[i].methodName + stacks[i].lineNumber;
+                    var key = stacks[i] != null && stacks[i].className != null ? stacks[i].className + stacks[i].methodName + stacks[i].lineNumber : haxe.Json.stringify(stacks[i]);
                     if (set.exists(key)) {
                         stacks.splice(i, 1);
                     } else {
@@ -185,7 +185,11 @@ class AsyncBase<T>{
                     }
                 }
                 var stackString = 'Promise Call Stack:\n\t' + stacks.map(function(s) {
-                    return '${s.fileName}:${s.lineNumber} ${s.className}.${s.methodName}()';
+                    if (s != null && s.fileName != null) {
+                        return '${s.fileName}:${s.lineNumber} ${s.className}.${s.methodName}()';
+                    } else {
+                        return 'Unknown stack object=${haxe.Json.stringify(s)}';
+                    }
                 }).join('\n\t');
                 // haxe.Json.stringify(stacks, null, '\t');
                 trace(stackString);
